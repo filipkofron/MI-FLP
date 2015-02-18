@@ -1,0 +1,14 @@
+| SchemeReader |;
+
+SchemeReader = Object createWith:
+{
+	"readFile:", [ :readFile: |
+		| ch |;
+		ch = readFile
+	]
+};
+
+Env installGlobalVarName: "SchemeReader" withValue: SchemeReader;
+
+SchemeReader
+

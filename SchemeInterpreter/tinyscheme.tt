@@ -1,0 +1,15 @@
+| TinyScheme |;
+
+Exec execFileName: "/home/kofee/MI-FLP/SchemeInterpreter/schemereader.tt";
+
+TinyScheme = Object createWith:
+{
+	"repl", [ :repl |
+		| expr |;
+		expr = SchemeReader readFile: In;
+		Debug print: expr
+	]
+};
+
+TinyScheme
+

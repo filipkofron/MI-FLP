@@ -1,0 +1,18 @@
+| CharsProvider |;
+
+CharsProvider = Object createWith:
+{
+	"forFile:", [ :forFile: |
+		Object createWith:
+		{
+			"kept", 0,
+			"chars", Map new,
+			"read", [nil]
+		}
+	]
+};
+
+Env installGlobalVarName: "CharsProvider" withValue: CharsProvider;
+
+CharsProvider
+
