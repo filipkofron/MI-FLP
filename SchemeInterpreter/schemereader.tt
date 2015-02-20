@@ -2,9 +2,132 @@
 
 SchemeReader = Object createWith:
 {
+	"isSeparator:", [ :isSeparator: |
+		(((isSeparator equals: "\n")
+	     or: (isSeparator equals: "\r"))
+		  or: (isSeparator equals: " "))
+		   or: (isSeparator equals: "\t")
+	],
+	"isDigit:", [ :isDigit: |
+		((isDigit charAsIntAt: 0) lessThanOrEqual: ("9" charAsIntAt: 0)) and:
+			((isDigit charAsIntAt: 0) greaterThanOrEqual: ("0" charAsIntAt: 0))
+	],
+	"eatSeparators:", [ :eatSeparators: |
+		| thiz |; thiz = this;
+		While isTrue:
+		[
+			thiz isSeparator: (eatSeparators peek charValue)
+		]
+		do:
+		[
+			eatSeparators read
+		]
+	],
 	"readFile:", [ :readFile: |
-		| ch |;
-		ch = readFile
+		| chars thiz |; thiz = this;
+		chars = CharsProvider forFile: readFile;
+		thiz read: chars
+	],
+	"read:", [ :read: |
+		| thiz ch chars |; thiz = this; chars = read;
+		this eatSeparators: chars;
+		ch = chars peek charValue;
+		(ch equals: "(")
+			ifTrue:
+			[
+				thiz readList: chars
+			]
+			ifFalse:
+			[
+				(thiz isDigit: ch)
+					ifTrue: [ thiz readNumber: chars ]
+					ifFalse:
+					[
+						(ch equals: (34 charValue))
+							ifTrue: [ thiz readString: chars ]
+							ifFalse:
+							[
+								(ch equals: ")")
+									ifTrue:
+									[
+										SchemeNil new
+									]
+									ifFalse:
+									[
+										(chars isEOF)
+											ifTrue: [ SchemeNil new ]
+											ifFalse: [ thiz readSymbol: chars ]
+									]
+							]
+					]
+			]
+	],
+	"readList:", [ :readList: |
+		| thiz |; thiz = this;
+		Out writeLine: ">> Would read List";
+		readList read;
+		this eatSeparators: readList;
+		this readListRest: readList
+	],
+	"readListRest:", [ :readListRest: |
+		| ch thiz |; thiz = this;
+		Out writeLine: ">> Would read ListRest";
+		this eatSeparators: readListRest;
+		ch = readListRest peek charValue;
+		(readListRest isEOF)
+			ifFalse:
+			[
+				(ch equals: ")")
+					ifTrue: [ readListRest read; SchemeNil new ]
+					ifFalse:
+					[
+						| val |; val = thiz read: readListRest;
+						SchemeCons car: val cdr: (thiz readListRest: readListRest)
+					]
+			]
+			ifTrue:
+			[
+				SchemeNil new
+			]
+	],
+	"readNumber:", [ :readNumber: |
+		| numberStr thiz |; thiz = this;
+		Out writeLine: ">> Would read Number";
+		numberStr = "";
+		While isTrue:
+		[
+			thiz isDigit: (readNumber peek charValue)
+		]
+		do:
+		[
+			numberStr = numberStr append: (readNumber read charValue)
+		];
+		SchemeNumber numVal: (Integer fromString: numberStr)
+	],
+	"readString:", [ :readString: |
+		Out writeLine: ">> Would read String";
+		readString read;
+		| str |;
+		str = readString readUntilChar: (34 charValue);
+		readString read;
+		| strObj |; strObj = SchemeString new;
+		strObj setStr: str;
+		strObj
+	],
+	"readSymbol:", [ :readSymbol: |
+		Out writeLine: ">> Would read Symbol";
+		| str thiz |; thiz = this;
+		str = "";
+		While isTrue:
+		[
+			((thiz isSeparator: (readSymbol peek charValue)) not)
+				and: ((readSymbol peek charValue equals: ")") not)
+		]
+		do:
+		[
+			str = str append: (readSymbol read charValue)
+		];
+		SchemeSymbol name: str
 	]
 };
 

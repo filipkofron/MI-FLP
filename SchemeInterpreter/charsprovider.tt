@@ -5,9 +5,57 @@ CharsProvider = Object createWith:
 	"forFile:", [ :forFile: |
 		Object createWith:
 		{
+			"file", forFile,
 			"kept", 0,
+			"end", False,
 			"chars", Map new,
-			"read", [nil]
+			"peek", [
+				(kept greaterThan: 0)
+					ifTrue:
+					[
+						chars getKey: ((kept minus: 1) toString)
+					]
+					ifFalse:
+					[
+						| char |;
+						char = forFile read;
+						(char equals: -1)
+							ifTrue:
+							[
+								end = True;
+								char
+							]
+							ifFalse:
+							[
+								chars addKey: (kept toString) value: (char);
+								kept = kept add: 1;
+								char
+							]
+					]
+			],
+			"read", [
+				(kept greaterThan: 0)
+					ifTrue:
+					[
+						kept = kept minus: 1;
+						chars getKey: (kept toString)
+					]
+					ifFalse:
+					[ | ch |;
+						ch = file read;
+						(ch equals: -1)
+							ifTrue: [ end = True ];
+						ch
+					]
+			],
+			"readUntilChar:", [ :readUntilChar: |
+				| str thiz |; str = ""; thiz = this;
+				While
+					isTrue: [ (thiz peek charValue equals: readUntilChar) not ]
+					do: [ str = str append: (thiz read charValue) ];
+				str
+			],
+			"isEOF", [ end ]
 		}
 	]
 };

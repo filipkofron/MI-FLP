@@ -1,15 +1,23 @@
 | TinyScheme |;
 
-Exec execFileName: "/home/kofee/MI-FLP/SchemeInterpreter/schemereader.tt";
+Exec execFileName: "/home/kofee/School/MI-FLP/SchemeInterpreter/charsprovider.tt";
+Exec execFileName: "/home/kofee/School/MI-FLP/SchemeInterpreter/schemeobject.tt";
+Exec execFileName: "/home/kofee/School/MI-FLP/SchemeInterpreter/schemereader.tt";
 
 TinyScheme = Object createWith:
 {
 	"repl", [ :repl |
+		this fepl: In
+	],
+	"fepl:", [ :fepl: |
 		| expr |;
-		expr = SchemeReader readFile: In;
+		expr = SchemeReader readFile: fepl;
+		Out writeLine: (expr toString);
 		Debug print: expr
 	]
 };
+
+Env installGlobalVarName: "TinyScheme" withValue: TinyScheme;
 
 TinyScheme
 

@@ -1,0 +1,120 @@
+| SchemeObject SchemeCons SchemeNil SchemeNumber SchemeSymbol SchemeString |;
+
+SchemeObject = Object createWith:
+{
+	"toString", [ "SchemeObject" ]
+};
+
+SchemeCons = SchemeObject createWith:
+{
+	"new", [
+		| inst |;
+		inst = this getParent createWith:
+		{
+			"car", nil,
+			"cdr", nil
+		};
+		inst setParent: this;
+		inst
+	],
+	"car:cdr:", [ :car: :cdr: |
+		| inst |;
+		inst = this new;
+		inst setCar: car;
+		inst setCdr: cdr;
+		inst
+	],
+	"setCar:", [ :setCar: | car = setCar ],
+	"setCdr:", [ :setCdr: | cdr = setCdr ],
+	"getCar", [ car ],
+	"getCdr", [ cdr ],
+	"toString", [ "SchemeCons" ]
+};
+
+SchemeNil = SchemeObject createWith:
+{
+	"toString", [ "SchemeNil" ]
+};
+
+SchemeNumber = SchemeObject createWith:
+{
+	"new", [
+		| inst |;
+		inst = this getParent createWith:
+		{
+			"numVal", 0
+		};
+		inst setParent: this;
+		inst
+	],
+	"setNumVal:", [ :setNumVal: |
+		numVal = setNumVal
+	],
+	"getNumVal", [ :genNumVal |
+		numVal
+	],
+	"numVal:", [ :numVal: |
+		| inst |;
+		inst = this new;
+		inst setNumVal: numVal;
+		inst
+	],
+	"toString", [ "SchemeNumber" ]
+};
+
+SchemeSymbol = SchemeObject createWith:
+{
+	"new", [
+		| inst |;
+		inst = this getParent createWith:
+		{
+			"name", 0
+		};
+		inst setParent: this;
+		inst
+	],
+	"setName:", [ :setName: |
+		name = setName
+	],
+	"getName", [ :getName |
+		name
+	],
+	"name:", [ :name: |
+		| inst |;
+		inst = this new;
+		inst setName: name;
+		inst
+	],
+	"toString", [ "SchemeSymbol" ]
+};
+
+SchemeString = SchemeObject createWith:
+{
+	"new", [
+		| inst |;
+		inst = this getParent createWith:
+		{
+			"str", 0
+		};
+		inst setParent: this;
+		inst
+	],
+	"setStr:", [ :setStr: |
+		str = setStr
+	],
+	"getStr", [ :getStr |
+		str
+	],
+	"toString", [ "SchemeString" ]
+};
+
+Env installGlobalVarName: "SchemeObject" withValue: SchemeObject;
+Env installGlobalVarName: "SchemeCons" withValue: SchemeCons;
+Env installGlobalVarName: "SchemeNil" withValue: SchemeNil;
+Env installGlobalVarName: "SchemeNumber" withValue: SchemeNumber;
+Env installGlobalVarName: "SchemeSymbol" withValue: SchemeSymbol;
+Env installGlobalVarName: "SchemeString" withValue: SchemeString;
+
+
+SchemeObject
+
