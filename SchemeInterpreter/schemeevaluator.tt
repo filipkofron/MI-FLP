@@ -1,0 +1,59 @@
+| SchemeEvaluator |;
+
+SchemeEvaluator = Object createWith:
+{
+	"eval:", [ :eval: |
+		| res thiz |; thiz = this;
+		res = SchemeNil;
+		(eval isSchemeCons)
+			ifTrue:
+			[
+				res = thiz evalSchemeCons: eval
+			];
+		(eval isSchemeSymbol)
+			ifTrue:
+			[
+				res = thiz evalSchemeSymbol: eval
+			];
+		(eval isSchemeString)
+			ifTrue:
+			[
+				res = thiz evalSchemeString: eval
+			];
+		(eval isSchemeNil)
+			ifTrue:
+			[
+				res = thiz evalSchemeNil: eval
+			];
+		(eval isSchemeNumber)
+			ifTrue:
+			[
+				res = thiz evalSchemeNumber: eval
+			];
+		res
+	],
+	"evalSchemeCons:", [ :evalSchemeCons: |
+		Out writeLine: "Would eval SchemeCons";
+		SchemeNil
+	],
+	"evalSchemeSymbol:", [ :evalSchemeSymbol: |
+		Out writeLine: "Would eval isSchemeSymbol";
+		SchemeNil
+	],
+	"evalSchemeString:", [ :evalSchemeString: |
+		Out writeLine: "Would eval isSchemeString";
+		SchemeNil
+	],
+	"evalSchemeNil:", [ :evalSchemeNil: |
+		SchemeNil
+	],
+	"evalSchemeNumber:", [ :evalSchemeNumber: |
+		Out writeLine: "Would eval isSchemeNumber";
+		SchemeNil
+	],
+};
+
+Env installGlobalVarName: "SchemeEvaluator" withValue: SchemeEvaluator;
+
+SchemeEvaluator
+

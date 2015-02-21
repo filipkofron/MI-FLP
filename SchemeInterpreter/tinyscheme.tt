@@ -3,6 +3,7 @@
 Exec execFileName: "/home/kofee/School/MI-FLP/SchemeInterpreter/charsprovider.tt";
 Exec execFileName: "/home/kofee/School/MI-FLP/SchemeInterpreter/schemeobject.tt";
 Exec execFileName: "/home/kofee/School/MI-FLP/SchemeInterpreter/schemereader.tt";
+Exec execFileName: "/home/kofee/School/MI-FLP/SchemeInterpreter/schemeevaluator.tt";
 
 TinyScheme = Object createWith:
 {
@@ -13,7 +14,8 @@ TinyScheme = Object createWith:
 		| expr |;
 		expr = SchemeReader readFile: fepl;
 		Out writeLine: (expr toString);
-		Debug print: expr
+		Debug print: expr;
+		SchemeEvaluator eval: expr
 	]
 };
 

@@ -2,7 +2,12 @@
 
 SchemeObject = Object createWith:
 {
-	"toString", [ "SchemeObject" ]
+	"toString", [ "SchemeObject" ],
+	"isSchemeCons", [ False ],
+	"isSchemeNil", [ False ],
+	"isSchemeNumber", [ False ],
+	"isSchemeSymbol", [ False ],
+	"isSchemeString", [ False ]
 };
 
 SchemeCons = SchemeObject createWith:
@@ -28,12 +33,14 @@ SchemeCons = SchemeObject createWith:
 	"setCdr:", [ :setCdr: | cdr = setCdr ],
 	"getCar", [ car ],
 	"getCdr", [ cdr ],
-	"toString", [ "SchemeCons" ]
+	"toString", [ "SchemeCons" ],
+	"isSchemeCons", [ True ]
 };
 
 SchemeNil = SchemeObject createWith:
 {
-	"toString", [ "SchemeNil" ]
+	"toString", [ "SchemeNil" ],
+	"isSchemeNil", [ True ]
 };
 
 SchemeNumber = SchemeObject createWith:
@@ -59,7 +66,8 @@ SchemeNumber = SchemeObject createWith:
 		inst setNumVal: numVal;
 		inst
 	],
-	"toString", [ "SchemeNumber" ]
+	"toString", [ "SchemeNumber" ],
+	"isSchemeNumber", [ True ]
 };
 
 SchemeSymbol = SchemeObject createWith:
@@ -85,7 +93,8 @@ SchemeSymbol = SchemeObject createWith:
 		inst setName: name;
 		inst
 	],
-	"toString", [ "SchemeSymbol" ]
+	"toString", [ "SchemeSymbol" ],
+	"isSchemeSymbol", [ True ]
 };
 
 SchemeString = SchemeObject createWith:
@@ -105,7 +114,8 @@ SchemeString = SchemeObject createWith:
 	"getStr", [ :getStr |
 		str
 	],
-	"toString", [ "SchemeString" ]
+	"toString", [ "SchemeString" ],
+	"isSchemeString", [ False ]
 };
 
 Env installGlobalVarName: "SchemeObject" withValue: SchemeObject;
