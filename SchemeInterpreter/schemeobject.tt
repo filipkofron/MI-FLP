@@ -1,4 +1,4 @@
-| SchemeObject SchemeCons SchemeNil SchemeNumber SchemeSymbol SchemeString |;
+| SchemeObject SchemeCons SchemeNil SchemeNumber SchemeSymbol SchemeString SchemeTrue SchemeFalse |;
 
 SchemeObject = Object createWith:
 {
@@ -118,12 +118,26 @@ SchemeString = SchemeObject createWith:
 	"isSchemeString", [ False ]
 };
 
+SchemeTrue = SchemeObject createWith:
+{
+	"toString", [ "SchemeTrue" ],
+	"isSchemeTrue", [ True ]
+};
+
+SchemeFalse = SchemeObject createWith:
+{
+	"toString", [ "SchemeFalse" ],
+	"isSchemeFalse", [ True ]
+};
+
 Env installGlobalVarName: "SchemeObject" withValue: SchemeObject;
 Env installGlobalVarName: "SchemeCons" withValue: SchemeCons;
 Env installGlobalVarName: "SchemeNil" withValue: SchemeNil;
 Env installGlobalVarName: "SchemeNumber" withValue: SchemeNumber;
 Env installGlobalVarName: "SchemeSymbol" withValue: SchemeSymbol;
 Env installGlobalVarName: "SchemeString" withValue: SchemeString;
+Env installGlobalVarName: "SchemeTrue" withValue: SchemeTrue;
+Env installGlobalVarName: "SchemeFalse" withValue: SchemeFalse;
 
 
 SchemeObject

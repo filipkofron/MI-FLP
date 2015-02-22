@@ -2,8 +2,49 @@
 
 SchemeEnv = Object createWith:
 {
-	"
-
+	"new", [
+		| inst |;
+		inst = this getParent createWith:
+		{
+			"vars", Map new,
+			"parentSchemeEnv", nil
+		};
+		inst setParent: this;
+		inst
+	],
+	"setUpGlobals", [ :setUpGlobals |
+		this createVar: "nil" value: SchemeNil;
+		this createVar: "true" value: SchemeTrue;
+		this createVar: "false" value: SchemeFalse
+	],
+	"newWithParentEnv:", [ :newWithParentEnv: |
+		| inst |;
+		inst = this getParent createWith:
+		{
+			"vars", Map new,
+			"parentSchemeEnv", newWithParentEnv
+		};
+		inst setParent: this;
+		inst
+	],
+	"getVar:", [ :getVar: |
+		| res |;
+		res = vars getKey: getVar;
+		res isNil ifTrue: [ Out writeLine: ("Cannot find binding for variable: '" append: (getVar append: "'!")) ];
+		res
+	],
+	"setVar:value:", [ :setVar: :value: |
+		| test |;
+		test = vars getKey: setVar;
+		test isNil ifTrue: [ Out writeLine: ("Cannot set binding for variable: '" append: (setVar append: "'!")) ];
+		vars setKey: setVar value: value
+	],
+	"createVar:value:", [ :createVar: :value: |
+		| test |;
+		test = vars getKey: createVar;
+		test isNil ifTrue: [ Out writeLine: ("Binding for variable: '" append: (createVar append: "' already exists!")) ];
+		vars addKey: createVar value: value
+	]
 };
 
 Env installGlobalVarName: "SchemeEnv" withValue: SchemeEnv;
