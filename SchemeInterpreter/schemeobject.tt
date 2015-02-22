@@ -1,4 +1,4 @@
-| SchemeObject SchemeCons SchemeNil SchemeNumber SchemeSymbol SchemeString SchemeTrue SchemeFalse |;
+| SchemeObject SchemeCons SchemeNil SchemeNumber SchemeSymbol SchemeString SchemeTrue SchemeFalse SchemeBuiltin SchemeFunction |;
 
 SchemeObject = Object createWith:
 {
@@ -7,7 +7,11 @@ SchemeObject = Object createWith:
 	"isSchemeNil", [ False ],
 	"isSchemeNumber", [ False ],
 	"isSchemeSymbol", [ False ],
-	"isSchemeString", [ False ]
+	"isSchemeString", [ False ],
+	"isSchemeTrue", [ False ],
+	"isSchemeFalse", [ False ],
+	"isSchemeBuiltin", [ False ],
+	"isSchemeFunction", [ False ]
 };
 
 SchemeCons = SchemeObject createWith:
@@ -130,6 +134,55 @@ SchemeFalse = SchemeObject createWith:
 	"isSchemeFalse", [ True ]
 };
 
+SchemeBuiltin = SchemeObject createWith:
+{
+	"toString", [ "SchemeBuiltin" ],
+	"isSchemeBuiltin", [ True ],
+	"fromMethod:", [ :fromMethod: |
+		| inst |;
+		inst = this getParent createWith:
+		{
+			"method", fromMethod
+		};
+		inst setParent: this;
+		inst
+	],
+	"getMethod", [ method ]
+};
+
+SchemeFunction = SchemeObject createWith:
+{
+	"toString", [ "SchemeFunction" ],
+	"isSchemeFunction", [ True ],
+	"fromExpr:withArgs:", [ :fromExpr: :withArgs: |
+		| inst |;
+		inst = this getParent createWith:
+		{
+			"expr", fromExpr,
+			"args", withArgs,
+			"arg", nil
+		};
+		inst setParent: this;
+		inst
+	],
+	"fromExpr:withArg:", [ :fromExpr: :withArg: |
+		| inst |;
+		inst = this getParent createWith:
+		{
+			"expr", fromExpr,
+			"args", nil,
+			"arg", withArg
+		};
+		inst setParent: this;
+		inst
+	],
+	"isWithArgs", [ args isNil ],
+	"isWithArg", [ this isWithArgs not ],
+	"getArgs", [ args ],
+	"getArg", [ arg ],
+	"getExpr", [ expr ]
+};
+
 Env installGlobalVarName: "SchemeObject" withValue: SchemeObject;
 Env installGlobalVarName: "SchemeCons" withValue: SchemeCons;
 Env installGlobalVarName: "SchemeNil" withValue: SchemeNil;
@@ -138,7 +191,8 @@ Env installGlobalVarName: "SchemeSymbol" withValue: SchemeSymbol;
 Env installGlobalVarName: "SchemeString" withValue: SchemeString;
 Env installGlobalVarName: "SchemeTrue" withValue: SchemeTrue;
 Env installGlobalVarName: "SchemeFalse" withValue: SchemeFalse;
-
+Env installGlobalVarName: "SchemeBuiltin" withValue: SchemeBuiltin;
+Env installGlobalVarName: "SchemeFunction" withValue: SchemeFunction;
 
 SchemeObject
 

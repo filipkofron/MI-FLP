@@ -1,0 +1,8 @@
+| SchemeBuiltins |;
+
+SchemeBuiltins = 
+{
+	"lambda", [ ]
+};
+
+SchemeBuiltins

@@ -2,54 +2,54 @@
 
 SchemeEvaluator = Object createWith:
 {
-	"eval:", [ :eval: |
+	"eval:inEnv:", [ :eval: :inEnv: |
 		| res thiz |; thiz = this;
 		res = SchemeNil;
 		(eval isSchemeCons)
 			ifTrue:
 			[
-				res = thiz evalSchemeCons: eval
+				res = thiz evalSchemeCons: eval inEnv: inEnv
 			];
 		(eval isSchemeSymbol)
 			ifTrue:
 			[
-				res = thiz evalSchemeSymbol: eval
+				res = thiz evalSchemeSymbol: eval inEnv: inEnv
 			];
 		(eval isSchemeString)
 			ifTrue:
 			[
-				res = thiz evalSchemeString: eval
+				res = thiz evalSchemeString: eval inEnv: inEnv
 			];
 		(eval isSchemeNil)
 			ifTrue:
 			[
-				res = thiz evalSchemeNil: eval
+				res = thiz evalSchemeNil: eval inEnv: inEnv
 			];
 		(eval isSchemeNumber)
 			ifTrue:
 			[
-				res = thiz evalSchemeNumber: eval
+				res = thiz evalSchemeNumber: eval inEnv: inEnv
 			];
 		res
 	],
-	"evalSchemeCons:", [ :evalSchemeCons: |
+	"evalSchemeCons:inEnv:", [ :evalSchemeCons: :inEnv: |
 		Out writeLine: "Would eval SchemeCons";
 		SchemeNil
 	],
-	"evalSchemeSymbol:", [ :evalSchemeSymbol: |
-		Out writeLine: "Would eval isSchemeSymbol";
+	"evalSchemeSymbol:inEnv:", [ :evalSchemeSymbol: :inEnv: |
+		Out writeLine: ("evalSchemeSymbol[" append: (evalSchemeSymbol getName append: "]"));
+		inEnv getVar: (evalSchemeSymbol getName)
+	],
+	"evalSchemeString:inEnv:", [ :evalSchemeString: :inEnv: |
+		Out writeLine: ("evalSchemeString[" append: (evalSchemeString getStr append: "]"));
+		evalSchemeString getStr
+	],
+	"evalSchemeNil:inEnv:", [ :evalSchemeNil: :inEnv: |
 		SchemeNil
 	],
-	"evalSchemeString:", [ :evalSchemeString: |
-		Out writeLine: "Would eval isSchemeString";
-		SchemeNil
-	],
-	"evalSchemeNil:", [ :evalSchemeNil: |
-		SchemeNil
-	],
-	"evalSchemeNumber:", [ :evalSchemeNumber: |
-		Out writeLine: "Would eval isSchemeNumber";
-		SchemeNil
+	"evalSchemeNumber:inEnv:", [ :evalSchemeNumber: :inEnv: |
+		Out writeLine: ("evalSchemeNumber[" append: ((evalSchemeNumber getNumVal toString) append: "]"));
+		evalSchemeNumber
 	],
 };
 

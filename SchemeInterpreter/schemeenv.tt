@@ -13,9 +13,9 @@ SchemeEnv = Object createWith:
 		inst
 	],
 	"setUpGlobals", [ :setUpGlobals |
-		this createVar: "nil" value: SchemeNil;
-		this createVar: "true" value: SchemeTrue;
-		this createVar: "false" value: SchemeFalse
+		this createVar: "#nil" value: SchemeNil;
+		this createVar: "#t" value: SchemeTrue;
+		this createVar: "#f" value: SchemeFalse
 	],
 	"newWithParentEnv:", [ :newWithParentEnv: |
 		| inst |;
