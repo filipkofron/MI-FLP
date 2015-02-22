@@ -1,0 +1,12 @@
+| SchemeEnv |;
+
+SchemeEnv = Object createWith:
+{
+	"
+
+};
+
+Env installGlobalVarName: "SchemeEnv" withValue: SchemeEnv;
+
+SchemeEnv
+

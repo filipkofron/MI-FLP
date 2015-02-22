@@ -3,6 +3,7 @@
 Exec execFileName: "/home/kofee/School/MI-FLP/SchemeInterpreter/charsprovider.tt";
 Exec execFileName: "/home/kofee/School/MI-FLP/SchemeInterpreter/schemeobject.tt";
 Exec execFileName: "/home/kofee/School/MI-FLP/SchemeInterpreter/schemereader.tt";
+Exec execFileName: "/home/kofee/School/MI-FLP/SchemeInterpreter/schemeenv.tt";
 Exec execFileName: "/home/kofee/School/MI-FLP/SchemeInterpreter/schemeevaluator.tt";
 
 TinyScheme = Object createWith:
