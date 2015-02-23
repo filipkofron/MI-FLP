@@ -4,19 +4,47 @@ Exec execFileName: "/home/kofee/School/MI-FLP/SchemeInterpreter/charsprovider.tt
 Exec execFileName: "/home/kofee/School/MI-FLP/SchemeInterpreter/schemeobject.tt";
 Exec execFileName: "/home/kofee/School/MI-FLP/SchemeInterpreter/schemereader.tt";
 Exec execFileName: "/home/kofee/School/MI-FLP/SchemeInterpreter/schemeenv.tt";
+Exec execFileName: "/home/kofee/School/MI-FLP/SchemeInterpreter/schemebuiltins.tt";
 Exec execFileName: "/home/kofee/School/MI-FLP/SchemeInterpreter/schemeevaluator.tt";
 
 TinyScheme = Object createWith:
 {
 	"repl", [ :repl |
-		this fepl: In
+		this fepl: In whole: False
 	],
-	"fepl:", [ :fepl: |
-		| expr |;
-		expr = SchemeReader readFile: fepl;
-		Out writeLine: (expr toString);
-		Debug print: expr;
-		SchemeEvaluator eval: expr
+	"globalEnv", [
+		| tmp |;
+		tmp = SchemeEnv new;
+		tmp setUpGlobals; tmp;
+		SchemeBuiltins installInEnv: tmp;
+		tmp
+	] value,
+	"fepl:whole:", [ :fepl: :whole: |
+		| expr fun |;
+		fun =
+		[
+			expr = SchemeReader readFile: fepl;
+			Out writeLine: (expr toString);
+			Debug print: expr;
+			SchemeEvaluator eval: expr inEnv: globalEnv
+		];
+		whole
+			ifTrue:
+			[
+				While
+					isTrue:
+					[
+						fepl isEOF not
+					]
+					do:
+					[
+						fun value
+					]
+			]
+			ifFalse:
+			[
+				fun value
+			]
 	]
 };
 

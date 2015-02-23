@@ -1,4 +1,5 @@
 | testFile |; testFile = File openReadOnly: "/home/kofee/School/MI-FLP/SchemeInterpreter/test.scm";
 | ts |; ts = Exec execFileName: "/home/kofee/School/MI-FLP/SchemeInterpreter/tinyscheme.tt";
-ts fepl: testFile
+ts fepl: testFile whole: False;
+ts fepl: testFile whole: False
 

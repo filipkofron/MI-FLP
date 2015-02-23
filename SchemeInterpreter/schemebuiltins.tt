@@ -1,8 +1,160 @@
-| SchemeBuiltins |;
+| SchemeBuiltins tmpBuiltins nameExctractor |;
 
-SchemeBuiltins = 
+nameExctractor =
+[ :extract: |
+	extract isSchemeNil
+		ifTrue:
+		[
+			SchemeNil
+		]
+		ifFalse:
+		[
+			Out writeLine: ("SCHEME RULEZZ: WOULD LAMBDA: SchemeCons, extracting:" append: (extract getCar getName));
+			SchemeCons car: (extract getCar getName) cdr: (nameExctractor extract: (extract getCdr))
+		]
+];
+
+tmpBuiltins = 
 {
-	"lambda", [ ]
+	"define", [ :callInEnv: :withArgs: |
+		Out writeLine: "SCHEME RULEZZ: WOULD DEFINE";
+		| symbol val |;
+		symbol = withArgs getCar;
+		val = SchemeEvaluator eval: (withArgs getCdr getCar) inEnv: callInEnv;
+		callInEnv getGlobalEnv createVar: (symbol getName) value: val
+	],
+	"lambda", [ :callInEnv: :withArgs: |
+		Out writeLine: "SCHEME RULEZZ: WOULD LAMBDA";
+		withArgs getCar isSchemeCons
+			ifTrue:
+			[
+				Out writeLine: "SCHEME RULEZZ: WOULD LAMBDA MATE: SchemeCons";
+				SchemeFunction fromExpr: (withArgs getCdr) withArgs: (nameExctractor extract: (withArgs getCar))
+
+			]
+			ifFalse:
+			[
+				Out writeLine: "SCHEME RULEZZ: WOULD LAMBDA: Not SchemeCons";
+				Debug print: withArgs;
+				SchemeFunction fromExpr: (withArgs getCdr) withArg: (withArgs getCar getName)
+			]
+	],
+	"if", [ :callInEnv: :withArgs: |
+		| if true false |;
+		if = withArgs getCar;
+		true = withArgs getCdr getCar;
+		withArgs getCdr getCdr isSchemeNil
+			ifFalse:
+			[
+				false = withArgs getCdr getCdr getCar
+			];
+		if = SchemeEvaluator eval: if inEnv: callInEnv;
+		if isSchemeTrue
+			ifTrue:
+			[
+				SchemeEvaluator eval: true inEnv: callInEnv
+			]
+			ifFalse:
+			[
+				false isNil not
+					ifTrue:
+					[
+						SchemeEvaluator eval: false inEnv: callInEnv
+					]
+					ifFalse:
+					[
+						SchemeNil
+					]
+			]
+	],
+	"eq?", [ :callInEnv: :withArgs: |
+		| first second |;
+		first = SchemeEvaluator eval: (withArgs getCar) inEnv: callInEnv;
+		second = SchemeEvaluator eval: (withArgs getCdr getCar) inEnv: callInEnv;
+		first isSchemeString
+			ifTrue:
+			[
+				(first getStr equals: (second getStr))
+					ifTrue:
+					[
+						SchemeTrue
+					]
+					ifFalse:
+					[
+						SchemeFalse
+					]
+			]
+			ifFalse:
+			[
+				(first getNumVal equals: (second getNumVal))
+					ifTrue:
+					[
+						SchemeTrue
+					]
+					ifFalse:
+					[
+						SchemeFalse
+					]
+			]
+	],
+	"*", [ :callInEnv: :withArgs: |
+		| first second |;
+		first = SchemeEvaluator eval: (withArgs getCar) inEnv: callInEnv;
+		second = SchemeEvaluator eval: (withArgs getCdr getCar) inEnv: callInEnv;
+		SchemeNumber numVal: (first getNumVal mul: (second getNumVal))
+	],
+	"-", [ :callInEnv: :withArgs: |
+		| first second |;
+		first = SchemeEvaluator eval: (withArgs getCar) inEnv: callInEnv;
+		second = SchemeEvaluator eval: (withArgs getCdr getCar) inEnv: callInEnv;
+		SchemeNumber numVal: (first getNumVal minus: (second getNumVal))
+	]
 };
 
+SchemeBuiltins = Object createWith:
+{
+	"builtins",
+	[
+		| i map tempName |; i = 0; map = Map new;
+		tmpBuiltins do:
+		[ :each: |
+			((i mod: 2) equals: 0)
+				ifTrue:
+				[
+					tempName = each
+				]
+				ifFalse:
+				[
+					map addKey: tempName value: each
+				];
+			i = i add: 1
+		];
+		map
+	] value,
+	"callBuiltin:callInEnv:withArgs:", [ :callBuiltin: :callInEnv: :withArgs: |
+		| fun |;
+		fun = map getKey: callBuiltin;
+		fun isNil
+			ifTrue:
+			[
+				Out writeLine: ("SchemeBuiltin: '" append: (callBuiltin append: "' not found!"));
+				SchemeNil
+			]
+			ifFalse:
+			[
+				fun callInEnv: callInEnv withArgs: withArgs
+			]
+	],
+	"installInEnv:", [ :installInEnv: |
+		builtins
+			eachNameDo:
+			[ :each: |
+				installInEnv createVar: each value: (SchemeBuiltin fromMethod: (builtins getKey: each))
+			]
+	]
+};
+
+Env installGlobalVarName: "SchemeBuiltins" withValue: SchemeBuiltins;
+
 SchemeBuiltins
+

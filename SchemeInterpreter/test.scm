@@ -1,3 +1,7 @@
+(define test (lambda (a) a))
+
+(test 600)
+
 (define
 	fac (lambda (a)
 	(
@@ -7,6 +11,8 @@
 			)
 	)
 ))
+
+(fac 10)
 
 (define
 	fib (lambda (a)

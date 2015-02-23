@@ -30,20 +30,54 @@ SchemeEnv = Object createWith:
 	"getVar:", [ :getVar: |
 		| res |;
 		res = vars getKey: getVar;
+		res isNil
+			ifTrue:
+			[
+				parentSchemeEnv isNil
+					ifFalse:
+					[
+						res = parentSchemeEnv getVar: getVar
+					]
+			];
 		res isNil ifTrue: [ Out writeLine: ("Cannot find binding for variable: '" append: (getVar append: "'!")) ];
 		res
 	],
 	"setVar:value:", [ :setVar: :value: |
 		| test |;
-		test = vars getKey: setVar;
+		test = this getVar: setVar;
 		test isNil ifTrue: [ Out writeLine: ("Cannot set binding for variable: '" append: (setVar append: "'!")) ];
-		vars setKey: setVar value: value
+		(vars getKey: setVar) isNil
+			ifTrue:
+			[
+				parentSchemeEnv setVar: setVar value: value
+			]
+			ifFalse:
+			[
+				vars setKey: setVar value: value
+			]
 	],
 	"createVar:value:", [ :createVar: :value: |
 		| test |;
 		test = vars getKey: createVar;
-		test isNil ifTrue: [ Out writeLine: ("Binding for variable: '" append: (createVar append: "' already exists!")) ];
+		test isNil not ifTrue: [ Out writeLine: ("Binding for variable: '" append: (createVar append: "' already exists!")) ];
 		vars addKey: createVar value: value
+	],
+	"getParentEnv", [ :getParentEnv |
+		parentSchemeEnv
+	],
+	"getGlobalEnv", [ :getGlobalEnv |
+		| temp |;
+		temp = this;
+		While
+			isTrue:
+			[
+				temp getParentEnv isNil not
+			]
+			do:
+			[
+				temp = temp getParentEnv
+			];
+		temp
 	]
 };
 

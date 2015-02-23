@@ -176,7 +176,7 @@ SchemeFunction = SchemeObject createWith:
 		inst setParent: this;
 		inst
 	],
-	"isWithArgs", [ args isNil ],
+	"isWithArgs", [ args isNil not ],
 	"isWithArg", [ this isWithArgs not ],
 	"getArgs", [ args ],
 	"getArg", [ arg ],

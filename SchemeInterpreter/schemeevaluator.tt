@@ -3,6 +3,7 @@
 SchemeEvaluator = Object createWith:
 {
 	"eval:inEnv:", [ :eval: :inEnv: |
+		Out writeLine: "@eval";
 		| res thiz |; thiz = this;
 		res = SchemeNil;
 		(eval isSchemeCons)
@@ -32,9 +33,78 @@ SchemeEvaluator = Object createWith:
 			];
 		res
 	],
+	"evalArgsRest:inEnv:", [ :evalArgsRest: :inEnv: |
+		| thiz |; thiz = this;
+		evalArgsRest isSchemeNil
+			ifTrue:
+			[
+				SchemeNil
+			]
+			ifFalse:
+			[
+				SchemeCons
+					car: (thiz eval: (evalArgsRest getCar) inEnv: inEnv)
+					cdr: (thiz evalArgsRest: (evalArgsRest getCdr) inEnv: inEnv)
+			]
+	],
 	"evalSchemeCons:inEnv:", [ :evalSchemeCons: :inEnv: |
-		Out writeLine: "Would eval SchemeCons";
-		SchemeNil
+		Out writeLine: "Would eval SchemeCons===";
+		| thiz func res |; thiz = this;
+		func = thiz eval: (evalSchemeCons getCar) inEnv: inEnv;
+		Out writeLine: ("Would eval SchemeCons with func: " append: (func toString));
+		Out writeLine: "Would eval SchemeCons for builtin:";
+		func isSchemeBuiltin
+			ifTrue:
+			[
+				Out writeLine: "Would eval SchemeCons for builtin: IS INDEED";
+				res = (func getMethod) callInEnv: inEnv withArgs: (evalSchemeCons getCdr)
+			];
+		Out writeLine: "Would eval SchemeCons for function:";
+		func isSchemeFunction
+			ifTrue:
+			[
+				Out writeLine: "Would eval SchemeCons for function: IS INDEED";
+				| args newEnv |;
+				args = thiz evalArgsRest: (evalSchemeCons getCdr) inEnv: inEnv;
+				newEnv = SchemeEnv newWithParentEnv: inEnv;
+				func isWithArg
+					ifTrue:
+					[
+						Out writeLine: "Would eval SchemeCons: func withArg";
+						Debug printString: (func getArg toString);
+						newEnv createVar: (func getArg) value: args
+					];
+				func isWithArgs
+					ifTrue:
+					[
+						Out writeLine: "Would eval SchemeCons: func withArgs";
+						| tempRest tempRestNames |;
+						tempRest = args;
+						tempRestNames = func getArgs;
+						
+						While
+							isTrue:
+							[
+								(tempRest isSchemeNil not) and: (tempRestNames isSchemeNil not)
+							]
+							do:
+							[
+								newEnv createVar: (tempRestNames getCar) value: (tempRest getCar);
+								tempRestNames = tempRestNames getCdr;
+								tempRest = tempRest getCdr
+							];
+						
+						((tempRest isSchemeNil not) xor: (tempRestNames isSchemeNil not))
+							ifTrue:
+							[
+								Out writeLine: "SchemeFunction: invalid amount of parameters!"
+							]
+						
+					];
+				Out writeLine: "Would eval SchemeCons: func DONE";
+				res = thiz eval: (func getExpr) inEnv: newEnv
+			];
+		res
 	],
 	"evalSchemeSymbol:inEnv:", [ :evalSchemeSymbol: :inEnv: |
 		Out writeLine: ("evalSchemeSymbol[" append: (evalSchemeSymbol getName append: "]"));
