@@ -10,7 +10,8 @@ Exec execFileName: "/home/kofee/School/MI-FLP/SchemeInterpreter/schemeevaluator.
 TinyScheme = Object createWith:
 {
 	"repl", [ :repl |
-		this fepl: In whole: False
+		In read;
+		this fepl: In whole: True
 	],
 	"globalEnv", [
 		| tmp |;
@@ -24,8 +25,7 @@ TinyScheme = Object createWith:
 		fun =
 		[
 			expr = SchemeReader readFile: fepl;
-			Out writeLine: (expr toString);
-			Debug print: expr;
+			Out writeLine: (expr toDisplayable);
 			SchemeEvaluator eval: expr inEnv: globalEnv
 		];
 		whole

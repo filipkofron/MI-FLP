@@ -1,7 +1,3 @@
-(define test (lambda (a) a))
-
-(test 600)
-
 (define
 	fac (lambda (a)
 	(
@@ -23,5 +19,7 @@
 	)
 ))
 
-(print "Hello, world")
+(fib 12)
+
+(display "Hello, world")
 

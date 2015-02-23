@@ -3,6 +3,7 @@
 SchemeObject = Object createWith:
 {
 	"toString", [ "SchemeObject" ],
+	"toDisplayable", [ "Object" ],
 	"isSchemeCons", [ False ],
 	"isSchemeNil", [ False ],
 	"isSchemeNumber", [ False ],
@@ -33,6 +34,7 @@ SchemeCons = SchemeObject createWith:
 		inst setCdr: cdr;
 		inst
 	],
+	"toDisplayable", [ "()" ],
 	"setCar:", [ :setCar: | car = setCar ],
 	"setCdr:", [ :setCdr: | cdr = setCdr ],
 	"getCar", [ car ],
@@ -44,6 +46,7 @@ SchemeCons = SchemeObject createWith:
 SchemeNil = SchemeObject createWith:
 {
 	"toString", [ "SchemeNil" ],
+	"toDisplayable", [ "#nil" ],
 	"isSchemeNil", [ True ]
 };
 
@@ -70,7 +73,8 @@ SchemeNumber = SchemeObject createWith:
 		inst setNumVal: numVal;
 		inst
 	],
-	"toString", [ "SchemeNumber" ],
+	"toDisplayable", [ numVal toString ],
+	"toString", [ "SchemeNumber[" append: (numVal toString append: "]") ],
 	"isSchemeNumber", [ True ]
 };
 
@@ -97,6 +101,7 @@ SchemeSymbol = SchemeObject createWith:
 		inst setName: name;
 		inst
 	],
+	"toDisplayable", [ "'" append: name ],
 	"toString", [ "SchemeSymbol" ],
 	"isSchemeSymbol", [ True ]
 };
@@ -107,7 +112,7 @@ SchemeString = SchemeObject createWith:
 		| inst |;
 		inst = this getParent createWith:
 		{
-			"str", 0
+			"str", ""
 		};
 		inst setParent: this;
 		inst
@@ -118,19 +123,22 @@ SchemeString = SchemeObject createWith:
 	"getStr", [ :getStr |
 		str
 	],
+	"toDisplayable", [ "\"" append: (str append: "\"") ],
 	"toString", [ "SchemeString" ],
-	"isSchemeString", [ False ]
+	"isSchemeString", [ True ]
 };
 
 SchemeTrue = SchemeObject createWith:
 {
 	"toString", [ "SchemeTrue" ],
+	"toDisplayable", [ "#t" ],
 	"isSchemeTrue", [ True ]
 };
 
 SchemeFalse = SchemeObject createWith:
 {
 	"toString", [ "SchemeFalse" ],
+	"toDisplayable", [ "#f" ],
 	"isSchemeFalse", [ True ]
 };
 
@@ -152,6 +160,7 @@ SchemeBuiltin = SchemeObject createWith:
 
 SchemeFunction = SchemeObject createWith:
 {
+	"toDisplayable", [ "lambda" ],
 	"toString", [ "SchemeFunction" ],
 	"isSchemeFunction", [ True ],
 	"fromExpr:withArgs:", [ :fromExpr: :withArgs: |

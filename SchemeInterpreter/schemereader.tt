@@ -64,14 +64,12 @@ SchemeReader = Object createWith:
 	],
 	"readList:", [ :readList: |
 		| thiz |; thiz = this;
-		Out writeLine: ">> Would read List";
 		readList read;
 		this eatSeparators: readList;
 		this readListRest: readList
 	],
 	"readListRest:", [ :readListRest: |
 		| ch thiz |; thiz = this;
-		Out writeLine: ">> Would read ListRest";
 		this eatSeparators: readListRest;
 		ch = readListRest peek charValue;
 		(readListRest isEOF)
@@ -92,7 +90,6 @@ SchemeReader = Object createWith:
 	],
 	"readNumber:", [ :readNumber: |
 		| numberStr thiz |; thiz = this;
-		Out writeLine: ">> Would read Number";
 		numberStr = "";
 		While isTrue:
 		[
@@ -105,7 +102,6 @@ SchemeReader = Object createWith:
 		SchemeNumber numVal: (Integer fromString: numberStr)
 	],
 	"readString:", [ :readString: |
-		Out writeLine: ">> Would read String";
 		readString read;
 		| str |;
 		str = readString readUntilChar: (34 charValue);
@@ -115,7 +111,6 @@ SchemeReader = Object createWith:
 		strObj
 	],
 	"readSymbol:", [ :readSymbol: |
-		Out writeLine: ">> Would read Symbol";
 		| str thiz |; thiz = this;
 		str = "";
 		While isTrue:

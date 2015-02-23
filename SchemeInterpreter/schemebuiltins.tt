@@ -9,7 +9,6 @@ nameExctractor =
 		]
 		ifFalse:
 		[
-			Out writeLine: ("SCHEME RULEZZ: WOULD LAMBDA: SchemeCons, extracting:" append: (extract getCar getName));
 			SchemeCons car: (extract getCar getName) cdr: (nameExctractor extract: (extract getCdr))
 		]
 ];
@@ -17,26 +16,21 @@ nameExctractor =
 tmpBuiltins = 
 {
 	"define", [ :callInEnv: :withArgs: |
-		Out writeLine: "SCHEME RULEZZ: WOULD DEFINE";
 		| symbol val |;
 		symbol = withArgs getCar;
 		val = SchemeEvaluator eval: (withArgs getCdr getCar) inEnv: callInEnv;
 		callInEnv getGlobalEnv createVar: (symbol getName) value: val
 	],
 	"lambda", [ :callInEnv: :withArgs: |
-		Out writeLine: "SCHEME RULEZZ: WOULD LAMBDA";
 		withArgs getCar isSchemeCons
 			ifTrue:
 			[
-				Out writeLine: "SCHEME RULEZZ: WOULD LAMBDA MATE: SchemeCons";
-				SchemeFunction fromExpr: (withArgs getCdr) withArgs: (nameExctractor extract: (withArgs getCar))
+				SchemeFunction fromExpr: (withArgs getCdr getCar) withArgs: (nameExctractor extract: (withArgs getCar))
 
 			]
 			ifFalse:
 			[
-				Out writeLine: "SCHEME RULEZZ: WOULD LAMBDA: Not SchemeCons";
-				Debug print: withArgs;
-				SchemeFunction fromExpr: (withArgs getCdr) withArg: (withArgs getCar getName)
+				SchemeFunction fromExpr: (withArgs getCdr getCar) withArg: (withArgs getCar getName)
 			]
 	],
 	"if", [ :callInEnv: :withArgs: |
@@ -97,17 +91,95 @@ tmpBuiltins =
 					]
 			]
 	],
+	"<", [ :callInEnv: :withArgs: |
+		| first second |;
+		first = SchemeEvaluator eval: (withArgs getCar) inEnv: callInEnv;
+		second = SchemeEvaluator eval: (withArgs getCdr getCar) inEnv: callInEnv;
+		first isSchemeString
+			ifTrue:
+			[
+				(first getStr lessThan: (second getStr))
+					ifTrue:
+					[
+						SchemeTrue
+					]
+					ifFalse:
+					[
+						SchemeFalse
+					]
+			]
+			ifFalse:
+			[
+				(first getNumVal lessThan: (second getNumVal))
+					ifTrue:
+					[
+						SchemeTrue
+					]
+					ifFalse:
+					[
+						SchemeFalse
+					]
+			]
+	],
+	">", [ :callInEnv: :withArgs: |
+		| first second |;
+		first = SchemeEvaluator eval: (withArgs getCar) inEnv: callInEnv;
+		second = SchemeEvaluator eval: (withArgs getCdr getCar) inEnv: callInEnv;
+		first isSchemeString
+			ifTrue:
+			[
+				(first getStr greaterThan: (second getStr))
+					ifTrue:
+					[
+						SchemeTrue
+					]
+					ifFalse:
+					[
+						SchemeFalse
+					]
+			]
+			ifFalse:
+			[
+				(first getNumVal greaterThan: (second getNumVal))
+					ifTrue:
+					[
+						SchemeTrue
+					]
+					ifFalse:
+					[
+						SchemeFalse
+					]
+			]
+	],
 	"*", [ :callInEnv: :withArgs: |
 		| first second |;
 		first = SchemeEvaluator eval: (withArgs getCar) inEnv: callInEnv;
 		second = SchemeEvaluator eval: (withArgs getCdr getCar) inEnv: callInEnv;
 		SchemeNumber numVal: (first getNumVal mul: (second getNumVal))
 	],
+	"/", [ :callInEnv: :withArgs: |
+		| first second |;
+		first = SchemeEvaluator eval: (withArgs getCar) inEnv: callInEnv;
+		second = SchemeEvaluator eval: (withArgs getCdr getCar) inEnv: callInEnv;
+		SchemeNumber numVal: (first getNumVal div: (second getNumVal))
+	],
 	"-", [ :callInEnv: :withArgs: |
 		| first second |;
 		first = SchemeEvaluator eval: (withArgs getCar) inEnv: callInEnv;
 		second = SchemeEvaluator eval: (withArgs getCdr getCar) inEnv: callInEnv;
 		SchemeNumber numVal: (first getNumVal minus: (second getNumVal))
+	],
+	"+", [ :callInEnv: :withArgs: |
+		| first second |;
+		first = SchemeEvaluator eval: (withArgs getCar) inEnv: callInEnv;
+		second = SchemeEvaluator eval: (withArgs getCdr getCar) inEnv: callInEnv;
+		SchemeNumber numVal: (first getNumVal add: (second getNumVal))
+	],
+	"display", [ :callInEnv: :withArgs: |
+		| first |;
+		first = SchemeEvaluator eval: (withArgs getCar) inEnv: callInEnv;
+		Out writeLine: (first toDisplayable);
+		SchemeNil
 	]
 };
 
