@@ -19,7 +19,8 @@ tmpBuiltins =
 		| symbol val |;
 		symbol = withArgs getCar;
 		val = SchemeEvaluator eval: (withArgs getCdr getCar) inEnv: callInEnv;
-		callInEnv getGlobalEnv createVar: (symbol getName) value: val
+		callInEnv getGlobalEnv createVar: (symbol getName) value: val;
+		val
 	],
 	"lambda", [ :callInEnv: :withArgs: |
 		withArgs getCar isSchemeCons
@@ -179,7 +180,7 @@ tmpBuiltins =
 		| first |;
 		first = SchemeEvaluator eval: (withArgs getCar) inEnv: callInEnv;
 		Out writeLine: (first toDisplayable);
-		SchemeNil
+		SchemeVoid
 	]
 };
 

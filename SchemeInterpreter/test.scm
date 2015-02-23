@@ -8,7 +8,8 @@
 	)
 ))
 
-(fac 10)
+(display "result:")
+(display (fac 10))
 
 (define
 	fib (lambda (a)

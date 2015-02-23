@@ -1,4 +1,4 @@
-| SchemeObject SchemeCons SchemeNil SchemeNumber SchemeSymbol SchemeString SchemeTrue SchemeFalse SchemeBuiltin SchemeFunction |;
+| SchemeObject SchemeCons SchemeNil SchemeVoid SchemeNumber SchemeSymbol SchemeString SchemeTrue SchemeFalse SchemeBuiltin SchemeFunction |;
 
 SchemeObject = Object createWith:
 {
@@ -6,6 +6,7 @@ SchemeObject = Object createWith:
 	"toDisplayable", [ "Object" ],
 	"isSchemeCons", [ False ],
 	"isSchemeNil", [ False ],
+	"isSchemeVoid", [ False ],
 	"isSchemeNumber", [ False ],
 	"isSchemeSymbol", [ False ],
 	"isSchemeString", [ False ],
@@ -47,6 +48,13 @@ SchemeNil = SchemeObject createWith:
 {
 	"toString", [ "SchemeNil" ],
 	"toDisplayable", [ "#nil" ],
+	"isSchemeNil", [ True ]
+};
+
+SchemeVoid = SchemeObject createWith:
+{
+	"toString", [ "SchemeVoid" ],
+	"toDisplayable", [ "" ],
 	"isSchemeNil", [ True ]
 };
 
@@ -195,6 +203,7 @@ SchemeFunction = SchemeObject createWith:
 Env installGlobalVarName: "SchemeObject" withValue: SchemeObject;
 Env installGlobalVarName: "SchemeCons" withValue: SchemeCons;
 Env installGlobalVarName: "SchemeNil" withValue: SchemeNil;
+Env installGlobalVarName: "SchemeVoid" withValue: SchemeVoid;
 Env installGlobalVarName: "SchemeNumber" withValue: SchemeNumber;
 Env installGlobalVarName: "SchemeSymbol" withValue: SchemeSymbol;
 Env installGlobalVarName: "SchemeString" withValue: SchemeString;
