@@ -1,5 +1,16 @@
 #include "token.h"
 
+const char *TOKENS[7] =
+{
+    "TOK_INVALID",
+    "TOK_EOF",
+    "TOK_INT_VAL",
+    "TOK_PAR_OPEN",
+    "TOK_PAR_CLOSE",
+    "TOK_ADD_OP",
+    "TOK_MUL_OP",
+};
+
 inline token_t make_token(type_e type)
 {
     token_t token;
@@ -21,8 +32,10 @@ int peek(FILE *file)
 
 int read(FILE *file)
 {
+    int val = peek(file);
     peek_val = EOF;
-    return peek(file);
+    peek(file);
+    return val;
 }
 
 token_t read_num(FILE *file)
@@ -68,6 +81,9 @@ token_t read_token(FILE *file)
         case '*':
             read(file);
             return make_token(TOK_MUL_OP);
+        case '\n':
+            read(file);
+            return make_token(TOK_EOF);
     }
     read(file);
     return make_token(TOK_INVALID);

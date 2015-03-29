@@ -15,6 +15,8 @@ typedef enum
     TOK_MUL_OP,
 } type_e;
 
+extern const char *TOKENS[7];
+
 struct any_s
 {
     type_e type;
