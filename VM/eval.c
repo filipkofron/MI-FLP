@@ -38,7 +38,7 @@ token_t pop()
     return stack[--pos];
 }
 
-int simplify_top(int finish)
+int reduce_top(int finish)
 {
     token_t l, c, r;
     int fail = 1;
@@ -94,15 +94,15 @@ void eval_step(token_t token)
     {
         case TOK_INT_VAL:
             push(token);
-            simplify_top(0);
+            reduce_top(0);
             break;
         case TOK_PAR_OPEN:
             push(token);
             break;
         case TOK_PAR_CLOSE:
-            while(simplify_top(1));
+            while(reduce_top(1));
             push(token);
-            while(simplify_top(0));
+            while(reduce_top(0));
             break;
         case TOK_ADD_OP:
             push(token);
@@ -111,7 +111,7 @@ void eval_step(token_t token)
             push(token);
             break;
         case TOK_EOF:
-            while(simplify_top(1));
+            while(reduce_top(1));
             break;
     }
 }

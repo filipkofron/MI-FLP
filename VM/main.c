@@ -23,7 +23,6 @@ int main(void)
             if(tok.any.type == TOK_INVALID)
             {
                 error = 1;
-                break;
             }
             eval_step(tok);
         } while(tok.any.type != TOK_EOF);

@@ -81,6 +81,7 @@ token_t read_token(FILE *file)
         case '*':
             read(file);
             return make_token(TOK_MUL_OP);
+        case '\r':
         case '\n':
             read(file);
             return make_token(TOK_EOF);
