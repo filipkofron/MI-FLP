@@ -35,10 +35,13 @@ check_char(end_of_file,[],_):- !.
 check_char(Char, [Char|Chars], InStream) :- get_code(InStream, NextChar), check_char(NextChar, Chars, InStream).
 
 ne_str(Str) :- string_length(Str, Len), Len > 0.
-n1_str(Str) :- string_length(Str, Len), Len > 1.
+any_ch_str(String, CharStr) :- name(String, CharList), member(FirstChar, CharList), atom_codes(CharStr, [FirstChar]).
 positive_integer(String) :- member(String, ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']).
 positive_integer(String) :- atom_concat(Start, End, String), string_length(Start, Len), Len = 1, ne_str(End), positive_integer(Start), !, positive_integer(End).
 
+is_wrong(String) :- any_ch_str(String, Str), \+ member(Str, ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '(', ')', '+', '*']).
+
+read_expr(String, [_]) :- is_wrong(String), !, fail.
 read_expr(String, [Expr]) :- String = '(', Expr = String.
 read_expr(String, [Expr]) :- String = ')', Expr = String.
 read_expr(String, [Expr]) :- String = '*', Expr = String.
@@ -54,16 +57,16 @@ read_num_expr(String, Rest, [Expr]) :- ne_str(String), positive_integer(String),
 eval(E, Res) :- expression(E, Res).
 eval(_, Res) :- Res = 'ERROR'.
 
-eval_line(Stream, Res) :- read_line(Stream, Line),
-  write('Will eval line: "'),
-  write(Line),
-  write('"'), !,
-  read_expr(Line, Expr), eval(Expr, Res).
+eval_line_rest(Line, Res) :- read_expr(Line, Expr), eval(Expr, Res).
+eval_line_rest(_, 'ERROR').
+
+eval_line(Stream, Res) :- read_line(Stream, Line), !,
+  eval_line_rest(Line, Res).
 
 eval_line(_, Res) :- Res = 'ERROR'.
 
 eval_n_times(_, 0) :- true.
-eval_n_times(Stream, N) :- N1 is N - 1, eval_line(Stream, Res), format(Res), eval_n_times(Stream, N1).
+eval_n_times(Stream, N) :- N1 is N - 1, eval_line(Stream, Res), format(Res), nl, eval_n_times(Stream, N1).
 
 % open('input.txt', read, File, [alias(my_input)]), eval_line(N), !, eval_n_times(N),
 
