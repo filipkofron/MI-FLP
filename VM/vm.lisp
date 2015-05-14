@@ -86,7 +86,7 @@
             )
             ((string-equal (car token) "+")
                 (let ((res (vm-eval level)))
-                    (if (stringp res)
+                    (if (symbolp res)
                         res
                         (+ lval res)
                     )
@@ -94,7 +94,7 @@
             )
             ((string-equal (car token) "*")
                 (let ((res (vm-eval-single-token level)))
-                    (if (stringp res)
+                    (if (symbolp res)
                         res
                         (vm-eval-lvalue-rest (* lval res) level)
                     )
@@ -124,7 +124,7 @@
 )
 
 (defun error-now ()
-    "ERROR"
+    'ERROR
 )
 
 (defun error-read-until-newline ()
@@ -132,7 +132,7 @@
         (if (eq token NIL)
             (error-read-until-newline)
             (if (eq (car token) NIL)
-                "ERROR"
+                'ERROR
                 (error-read-until-newline)
             )
         )
@@ -153,7 +153,7 @@
                         )
                         ((string-equal (car token) "(")
                             (let ((res (vm-eval (+ level 1))))
-                                (if (stringp res)
+                                (if (symbolp res)
                                     res
                                     (vm-eval-lvalue-rest
                                         res
